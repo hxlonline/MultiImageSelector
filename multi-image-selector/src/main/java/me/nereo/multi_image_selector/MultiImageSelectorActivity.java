@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -74,7 +75,7 @@ public class MultiImageSelectorActivity extends FragmentActivity implements Mult
         mSubmitButton = (Button) findViewById(R.id.commit);
         if(resultList == null || resultList.size()<=0){
             mSubmitButton.setText(R.string.action_done);
-            mSubmitButton.setEnabled(false);
+            mSubmitButton.setEnabled(true);
         }else{
             updateDoneText();
             mSubmitButton.setEnabled(true);
@@ -82,13 +83,11 @@ public class MultiImageSelectorActivity extends FragmentActivity implements Mult
         mSubmitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(resultList != null && resultList.size() >0){
-                    // 返回已选择的图片数据
-                    Intent data = new Intent();
-                    data.putStringArrayListExtra(EXTRA_RESULT, resultList);
-                    setResult(RESULT_OK, data);
-                    finish();
-                }
+                // 返回已选择的图片数据
+                Intent data = new Intent();
+                data.putStringArrayListExtra(EXTRA_RESULT, resultList);
+                setResult(RESULT_OK, data);
+                finish();
             }
         });
     }
@@ -119,6 +118,7 @@ public class MultiImageSelectorActivity extends FragmentActivity implements Mult
                 mSubmitButton.setEnabled(true);
             }
         }
+
     }
 
     @Override
@@ -127,20 +127,19 @@ public class MultiImageSelectorActivity extends FragmentActivity implements Mult
             resultList.remove(path);
         }
         updateDoneText();
-        // 当为选择图片时候的状态
+//         当为选择图片时候的状态
         if(resultList.size() == 0){
             mSubmitButton.setText(R.string.action_done);
-            mSubmitButton.setEnabled(false);
+//            mSubmitButton.setEnabled(false);
+            mSubmitButton.setEnabled(true);
         }
     }
 
     @Override
     public void onCameraShot(File imageFile) {
         if(imageFile != null) {
-
             // notify system
             sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(imageFile)));
-
             Intent data = new Intent();
             resultList.add(imageFile.getAbsolutePath());
             data.putStringArrayListExtra(EXTRA_RESULT, resultList);
